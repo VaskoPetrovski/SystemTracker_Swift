@@ -145,22 +145,20 @@ final class SwiftCodeKitViewController: UIViewController {
             useMainThreadOnlyLabel.centerYAnchor.constraint(equalTo: useMainThreadOnlySwitch.centerYAnchor),
             useMainThreadOnlyLabel.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 10),
             
-//            activeCPICountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            activeCPICountLabel.topAnchor.constraint(equalTo: goBackButton.bottomAnchor, constant: 20),
-//            activeCPICountLabel.widthAnchor.constraint(equalToConstant: 150),
-//            activeCPICountLabel.heightAnchor.constraint(equalToConstant: 50),
+
 
         ])
     }
     
+    /// Starts tracking system resource usage (CPU and RAM) and updates the UI accordingly.
+    /// Uses a repeating timer to fetch and display CPU usage (either from all cores or just the main thread based on a switch)
+    /// and RAM usage every 0.5 seconds.
     @objc private func startTracking() {
         trackingTimer?.invalidate() // Invalidate any existing timer
         
         trackingTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             DispatchQueue.main.async {
-//                let currentUsage = SystemTracker.cpuUsage()
-//                self?.cpuUsageLabel.text = String(format: "CPU Usage: %.2f%%", currentUsage.cpuUsage)
-                
+
                 if self?.useMainThreadOnlySwitch.isOn == true {
                                let currentUsage = SystemTracker.cpuUsageMainThread()
                                self?.cpuUsageLabel.text = String(format: "Main CPU: %.2f%%", currentUsage.cpuUsage)
@@ -174,7 +172,6 @@ final class SwiftCodeKitViewController: UIViewController {
                 let totalMemoryGB = Double(currentMemoryUsage.total) / 1_073_741_824 // Convert to GB
                 self?.ramUsageLabel.text = String(format: "RAM: %.2f GB / %.2f GB", usedMemoryGB, totalMemoryGB)
                 
-//                self?.activeCPICountLabel.text = String(format: "Active: %d",ProcessInfo.processInfo.activeProcessorCount )
             }
         }
     }
